@@ -39,10 +39,13 @@ const {spawnSync}=require('node:child_process');
       const id='a'.repeat(32);
       window.nativeRequests=[];
       window.openedTabs=[];
+      window.selectedPopup='popup.html';
       window.chrome={storage:{local:{get:async key=>({[key]:JSON.parse(localStorage.getItem('chrome_'+key)||'null')}),
-        set:async data=>{for(const [key,value] of Object.entries(data)) localStorage.setItem('chrome_'+key,JSON.stringify(value));}}},
+        set:async data=>{if(sessionStorage.storageFailure)throw Error('设置存储不可用');for(const [key,value] of Object.entries(data)) localStorage.setItem('chrome_'+key,JSON.stringify(value));}}},
+        action:{setPopup:async detail=>{if(sessionStorage.actionFailure)throw Error('菜单切换失败');selectedPopup=detail.popup;}},
         commands:{getAll:async()=>[{name:'_execute_action',shortcut:sessionStorage.shortcut??'Alt+Shift+Y'}]},
         tabs:{create:async detail=>openedTabs.push(detail)},runtime:{id,onMessage:{addListener:fn=>window.backgroundListener=fn},
+        onInstalled:{addListener:fn=>window.restoreInstalledPopup=fn},onStartup:{addListener:fn=>window.restoreStartupPopup=fn},
         sendNativeMessage:async(host,request)=>{
           nativeRequests.push(request);
           const mode=sessionStorage.nativeMode;
@@ -68,6 +71,11 @@ const {spawnSync}=require('node:child_process');
       await page.locator('#save').click();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('设置已保存'));
       await page.reload();await page.waitForFunction(()=>document.getElementById('connection').textContent.includes('已连接'));
       checks['重新打开后从新Native进程恢复设置']=(await page.locator('#root').inputValue())===path.join(temp,'新目录')&&await page.locator('#save_magnet').isChecked()&&!(await page.locator('#skip_existing').isChecked())&&(await page.locator('#retries').inputValue())==='4';
+      checks['窄版页面可以通过后台读取本地配置']=await page.evaluate(async()=>{
+        const result=await new Promise(resolve=>backgroundListener({route:'native',type:'get_settings'},
+          {id:chrome.runtime.id,url:'chrome-extension://'+chrome.runtime.id+'/popup-narrow.html'},resolve));
+        return result.ok&&result.data.retries===4;
+      });
       await page.locator('#detect').click();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('BitComet'));
       checks['设置标签页可以检测BitComet关联']=(await page.locator('#status').textContent()).includes('已确认磁力链接关联 BitComet');
       await page.evaluate(()=>sessionStorage.nativeMode='noAssociation');await page.locator('#detect').click();
@@ -101,6 +109,27 @@ const {spawnSync}=require('node:child_process');
       await page.evaluate(()=>{sessionStorage.nativeMode='offline';sessionStorage.shortcut='';});await page.reload();
       await page.waitForFunction(()=>document.getElementById('connection').textContent.includes('未连接'));
       checks['快捷键未分配时提示手动设置']=(await page.locator('#shortcutStatus').textContent()).includes('未读取到已分配');
+      await page.locator('#popupMode').selectOption('narrow');await page.locator('#savePopupMode').click();
+      await page.waitForFunction(()=>document.getElementById('popupModeStatus').textContent.includes('已保存'));
+      checks['本地程序离线时可保存窄版固定入口']=await page.evaluate(()=>selectedPopup==='popup-narrow.html'&&JSON.parse(localStorage.chrome_popupMode)==='narrow');
+      await page.reload();await page.waitForFunction(()=>document.getElementById('popupMode').value==='narrow');
+      await page.evaluate(()=>restoreStartupPopup());
+      checks['重开设置及浏览器启动恢复已保存窄版']=await page.evaluate(()=>selectedPopup==='popup-narrow.html');
+      await page.locator('#popupMode').selectOption('standard');await page.locator('#savePopupMode').click();
+      await page.waitForFunction(()=>document.getElementById('popupModeStatus').textContent.includes('已保存'));
+      checks['可切回标准版且不修改采集配置']=await page.evaluate(()=>selectedPopup==='popup.html'&&JSON.parse(localStorage.chrome_popupMode)==='standard')&&JSON.stringify(native({type:'get_settings'}).data)===saved;
+      await page.evaluate(()=>sessionStorage.actionFailure='1');
+      await page.locator('#popupMode').selectOption('narrow');await page.locator('#savePopupMode').click();
+      await page.waitForFunction(()=>document.getElementById('popupModeStatus').textContent.includes('菜单切换失败'));
+      checks['入口切换失败不会覆盖已保存样式']=await page.evaluate(()=>selectedPopup==='popup.html'&&JSON.parse(localStorage.chrome_popupMode)==='standard');
+      await page.evaluate(()=>{sessionStorage.removeItem('actionFailure');sessionStorage.storageFailure='1';});
+      await page.locator('#savePopupMode').click();
+      await page.waitForFunction(()=>document.getElementById('popupModeStatus').textContent.includes('设置存储不可用'));
+      checks['存储失败时恢复原菜单入口']=await page.evaluate(()=>selectedPopup==='popup.html'&&JSON.parse(localStorage.chrome_popupMode)==='standard');
+      await page.evaluate(()=>{sessionStorage.removeItem('storageFailure');localStorage.chrome_popupMode=JSON.stringify('https://untrusted.example/');});
+      await page.reload();await page.waitForFunction(()=>!document.getElementById('popupMode').disabled);
+      await page.evaluate(()=>restoreInstalledPopup());
+      checks['未知样式值回退标准固定页面']=await page.evaluate(()=>selectedPopup==='popup.html'&&document.getElementById('popupMode').value==='standard');
     }
     const result={ok:Object.values(checks).every(Boolean),checks};
     console.log(JSON.stringify(result,null,2));if(!result.ok) process.exitCode=1;

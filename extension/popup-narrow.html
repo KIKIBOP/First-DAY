@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN" class="popup-host popup-narrow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>采集菜单</title>
+<link rel="stylesheet" href="popup.css">
+<body class="popup">
+<header class="popup-toolbar"><span id="support" class="support-badge">正在识别</span><button id="options" title="快捷键及采集设置">设置</button></header>
+<main>
+  <div class="popup-content">
+    <section class="page-card">
+      <h3 id="title">读取帖子中…</h3>
+      <div id="previews"></div>
+      <p id="counts" class="muted"></p>
+      <p id="warnings" class="warning"></p>
+      <label id="confirmWrap" hidden><input type="checkbox" id="confirmImages">我已检查图片，确认按识别地址保存</label>
+      <label>磁力链接<select id="magnets"></select></label>
+      <details id="pageDetails"><summary>来源与原图地址</summary><p id="url" class="muted"></p><p id="adapter" class="muted"></p><div id="imageSources"></div></details>
+    </section>
+    <section class="collection-settings">
+      <h2>本次采集</h2>
+      <p id="root" class="muted">连接本地程序中…</p>
+      <div class="quick-checks">
+        <label><input type="checkbox" id="save_images" checked>保存两张原图</label>
+        <label><input type="checkbox" id="save_magnet" checked>保存磁力链接文本</label>
+        <label><input type="checkbox" id="auto_bitcomet" checked>调用 BitComet</label>
+      </div>
+      <p class="muted">在 BitComet 中确认任务保存目录。</p>
+      <p id="duplicate" class="warning"></p>
+      <label class="muted"><input type="checkbox" id="resubmit">再次发送已提交的磁力</label>
+    </section>
+    <section class="status-card" aria-live="polite"><h2>操作状态</h2><pre id="status">正在识别网页</pre></section>
+  </div>
+  <div class="controls">
+    <button id="collect" class="primary" disabled>一键采集并下载</button>
+    <div class="actions"><button id="repair" disabled>检查缺失文件</button><button id="open" disabled>打开目录</button><button id="copyFolder" disabled>复制目录</button><button id="cancel" disabled>取消任务</button></div>
+  </div>
+</main>
+<script type="module" src="popup.js"></script>
+</body>
+</html>

@@ -2,6 +2,12 @@ const HOST='com.chrome_media_collector.host';
 import {NativeConnection} from './native_bridge.js';
 import {downloadImages} from './browser_images.js';
 import {imageOrigins} from './image_access.js';
+import {restorePopupMode} from './popup_modes.js';
+
+// Select a pre-sized HTML entry, rather than resizing a popup after it opens.
+const restoreMenu=()=>restorePopupMode().catch(e=>console.warn('恢复菜单样式失败：'+e.message));
+chrome.runtime.onInstalled.addListener(restoreMenu);
+chrome.runtime.onStartup.addListener(restoreMenu);
 
 chrome.runtime.onMessage.addListener((message,sender,respond)=>{
   if(sender.id!==chrome.runtime.id || !message || message.route!=='native') return;
@@ -10,7 +16,7 @@ chrome.runtime.onMessage.addListener((message,sender,respond)=>{
   try {
     const url=new URL(sender.url);
     ownPage=url.protocol==='chrome-extension:'&&url.hostname===chrome.runtime.id&&
-      ['/popup.html','/options/index.html'].includes(url.pathname);
+      ['/popup.html','/popup-narrow.html','/options/index.html'].includes(url.pathname);
   } catch {}
   if(!ownPage) { respond({ok:false,error:'仅允许插件弹窗和设置页访问本地程序'}); return; }
   if(message.type==='start_collection' && message.data?.options?.save_images) {

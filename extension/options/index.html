@@ -8,6 +8,12 @@
 <header><span class="badge">本地辅助程序</span><h1>采集设置</h1><p id="connection" aria-live="polite">正在连接…</p></header>
 <main>
   <section>
+    <h2>菜单样式</h2>
+    <label>弹窗大小<select id="popupMode" disabled><option value="standard">标准版 · 500 × 580（当前大小）</option><option value="narrow">窄版 · 250 × 580（半宽）</option></select></label>
+    <button id="savePopupMode" disabled>保存菜单样式</button>
+    <p id="popupModeStatus" class="muted" aria-live="polite">正在读取菜单样式…</p>
+  </section>
+  <section>
     <h2>快捷键</h2>
     <p id="shortcutStatus" class="muted">正在读取快捷键…</p>
     <button id="shortcuts">设置快捷键</button>

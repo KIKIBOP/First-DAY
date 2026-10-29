@@ -55,3 +55,7 @@ html.popup-host{width:500px;min-width:500px;height:580px;min-height:580px;overfl
 .popup .primary{padding:10px;margin-bottom:7px}
 .actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
 .actions button{font-size:11px;padding:8px 3px;white-space:nowrap}
+html.popup-host.popup-narrow{width:250px;min-width:250px}
+.popup-narrow .popup{width:250px;min-width:250px}
+.popup-narrow .quick-checks{display:block}
+.popup-narrow .actions{grid-template-columns:repeat(2,minmax(0,1fr))}

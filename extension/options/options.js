@@ -1,4 +1,19 @@
 import {native,$,report} from '../common.js';
+import {readPopupMode,savePopupMode} from '../popup_modes.js';
+
+readPopupMode().then(mode=>{
+  $('popupMode').value=mode;$('popupMode').disabled=false;$('savePopupMode').disabled=false;
+  $('popupModeStatus').textContent='选择后保存，下次打开菜单生效。';
+}).catch(e=>{$('popupModeStatus').textContent='无法读取菜单样式：'+e.message;});
+$('savePopupMode').onclick=async()=>{
+  $('savePopupMode').disabled=true;
+  $('popupModeStatus').textContent='正在保存菜单样式…';
+  try {
+    await savePopupMode($('popupMode').value);
+    $('popupModeStatus').textContent='菜单样式已保存，下次打开菜单生效。';
+  } catch(e) { $('popupModeStatus').textContent='保存失败：'+e.message; }
+  finally { $('savePopupMode').disabled=false; }
+};
 $('shortcuts').onclick=()=>chrome.tabs.create({url:'chrome://extensions/shortcuts'}).catch(e=>{$('shortcutStatus').textContent=e.message;});
 (async()=>{
   try {

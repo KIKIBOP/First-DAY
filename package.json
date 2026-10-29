@@ -1,6 +1,6 @@
 {
   "name": "chrome-media-collector-tests",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "private": true,
   "scripts": {
     "test": "node tests/browser.cjs && node tests/popup.cjs && node tests/downloads.cjs && node tests/options.cjs"

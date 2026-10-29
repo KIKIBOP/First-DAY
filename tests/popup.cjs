@@ -70,6 +70,25 @@ const {chromium}=require('playwright');const path=require('node:path');const fs=
   await page.setViewportSize({width:500,height:580});
   checks['按内容尺寸展开后无横向溢出且操作区可见']=await page.evaluate(()=>document.documentElement.scrollWidth===500&&document.getElementById('collect').getBoundingClientRect().bottom<=580);
   if(process.env.POPUP_SCREENSHOT)await page.locator('body').screenshot({path:process.env.POPUP_SCREENSHOT});
+  await page.setViewportSize({width:25,height:25});
+  await page.goto('http://127.0.0.1/popup-narrow.html');
+  await page.waitForFunction(()=>!document.getElementById('collect').disabled);
+  checks['半宽入口在初始极小视口仍提供固定尺寸']=await page.evaluate(()=>{
+    const body=document.body.getBoundingClientRect();
+    return body.width===250&&body.height===580&&document.documentElement.scrollWidth>=250&&document.querySelector('.popup-content').clientHeight>200;
+  });
+  await page.setViewportSize({width:250,height:580});
+  await page.locator('#pageDetails').evaluate(el=>el.open=true);
+  await page.locator('.popup-content').evaluate(el=>el.scrollTop=el.scrollHeight);
+  checks['窄版展开内容无横向溢出且全部按钮可见']=await page.evaluate(()=>document.documentElement.scrollWidth===250&&
+    [...document.querySelectorAll('.controls button')].every(el=>{const box=el.getBoundingClientRect();return box.left>=0&&box.right<=250&&box.bottom<=580;}));
+  await page.locator('#collect').click();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('采集完成'));
+  checks['窄版保留原图及磁力采集流程']=await page.evaluate(()=>{
+    const request=calls.find(x=>x.type==='start_collection');return request.data.images.length===2&&request.data.magnets.length===1&&request.data.options.resubmit===false;
+  });
+  await page.locator('#pageDetails').evaluate(el=>el.open=false);
+  await page.locator('.popup-content').evaluate(el=>el.scrollTop=0);
+  if(process.env.POPUP_NARROW_SCREENSHOT)await page.locator('body').screenshot({path:process.env.POPUP_NARROW_SCREENSHOT});
   const result={ok:Object.values(checks).every(Boolean),checks};console.log(JSON.stringify(result,null,2));if(!result.ok)process.exitCode=1;
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

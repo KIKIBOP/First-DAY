@@ -1,5 +1,5 @@
 
-> chrome-media-collector-tests@0.1.6 test
+> chrome-media-collector-tests@0.1.7 test
 > node tests/browser.cjs && node tests/popup.cjs && node tests/downloads.cjs && node tests/options.cjs
 
 {
@@ -46,7 +46,10 @@
     "展开来源后操作区仍可见且原图地址保留": true,
     "旧版保存的尺寸不再影响弹窗": true,
     "初始25像素视口仍提供完整内容尺寸": true,
-    "按内容尺寸展开后无横向溢出且操作区可见": true
+    "按内容尺寸展开后无横向溢出且操作区可见": true,
+    "半宽入口在初始极小视口仍提供固定尺寸": true,
+    "窄版展开内容无横向溢出且全部按钮可见": true,
+    "窄版保留原图及磁力采集流程": true
   }
 }
 {
@@ -81,6 +84,7 @@
     "设置标签页通过后台读取本地配置": true,
     "已保存的勾选项及重试次数正确恢复": true,
     "重新打开后从新Native进程恢复设置": true,
+    "窄版页面可以通过后台读取本地配置": true,
     "设置标签页可以检测BitComet关联": true,
     "安装存在但未关联时给出明确说明": true,
     "连接失败时禁止保存空表单": true,
@@ -91,7 +95,13 @@
     "网页内容脚本及未知扩展页面不能读取本地配置": true,
     "显示当前实际分配的弹窗快捷键": true,
     "快捷键按钮打开Chrome原生配置页": true,
-    "快捷键未分配时提示手动设置": true
+    "快捷键未分配时提示手动设置": true,
+    "本地程序离线时可保存窄版固定入口": true,
+    "重开设置及浏览器启动恢复已保存窄版": true,
+    "可切回标准版且不修改采集配置": true,
+    "入口切换失败不会覆盖已保存样式": true,
+    "存储失败时恢复原菜单入口": true,
+    "未知样式值回退标准固定页面": true
   }
 }
 npm notice

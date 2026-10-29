@@ -109,6 +109,8 @@ const path=require('node:path');
       let listener, portReply, portDisconnect, portClosed=false;
       const order=[];
       chrome.runtime.onMessage={addListener:fn=>listener=fn};
+      chrome.runtime.onInstalled={addListener:()=>{}};
+      chrome.runtime.onStartup={addListener:()=>{}};
       chrome.storage={local:{set:async()=>order.push('stored')}};
       chrome.runtime.connectNative=()=>({onMessage:{addListener:fn=>portReply=fn},onDisconnect:{addListener:fn=>portDisconnect=fn},
         postMessage:msg=>queueMicrotask(()=>{order.push(msg.type);portReply({ok:true,data:msg.type==='prepare_collection'?{task_id:'5'.repeat(32)}:{}});}),

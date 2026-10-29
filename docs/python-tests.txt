@@ -54,6 +54,6 @@ test_trusted_ca_does_not_allow_wrong_hostname (test_tls.TLSHandshakeTests.test_t
 test_unknown_issuer_reproduces_reported_certificate_error (test_tls.TLSHandshakeTests.test_unknown_issuer_reproduces_reported_certificate_error) ... ok
 
 ----------------------------------------------------------------------
-Ran 54 tests in 1.264s
+Ran 54 tests in 1.223s
 
 OK
