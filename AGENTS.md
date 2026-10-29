@@ -97,3 +97,13 @@
 2. 保持 GitHub 操作规范，避免自动化滥用及不必要的账号、仓库风险。
 3. 若用户要求与 Codex 平台必要工作流程冲突，先解释具体冲突，再采用符合平台规则的处理方式；不得隐瞒限制或绕过平台机制。
 4. 当前任务中用户的新指示与本文件存在差异时，依照适用的平台规则和用户当前授权处理，必要时同步更新本文件。
+
+## 九、当前项目入口
+
+- 当前应用为 Chrome MV3 扩展和 Python Native Messaging Host，目标 Windows 11；源码已从用户提供的便携包导入本仓库。
+- Python 回归入口：`python3 -m unittest discover -s tests -p "test_*.py" -v`。Windows 可将 `python3` 替换为 `py -3`。
+- 浏览器回归入口：`npm test`；需 Playwright 和本机 Chromium，使用其他 Chrome 路径时设置 `CHROMIUM_PATH`。
+- 浏览器测试中的 Chrome 权限、请求规则及 Native API 有明确模拟，不能声称它们已证明 Windows 真实扩展联动。
+- Windows EXE 构建入口：`installer/build_exe.bat`。便携重打包入口：`tools/build_portable.py`，前置条件见 README。
+- 便携重打包校验并复用已有 Windows 启动器和运行环境，不等于重新编译或真机验证。交付扩展、本地源码和内附源码 ZIP 必须一致，并更新版本及校验值。
+- `work/` 仅保留临时检查、测试和构建暂存，不纳入源码提交。

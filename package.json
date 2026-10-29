@@ -1,0 +1,11 @@
+{
+  "name": "chrome-media-collector-tests",
+  "version": "0.1.2",
+  "private": true,
+  "scripts": {
+    "test": "node tests/browser.cjs && node tests/popup.cjs && node tests/downloads.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

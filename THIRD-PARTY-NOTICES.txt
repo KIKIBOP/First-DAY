@@ -1,0 +1,13 @@
+Bundled components:
+- CPython 3.13.17, Python Software Foundation.
+  Source: https://api.nuget.org/v3-flatcontainer/python/3.13.17/python.3.13.17.nupkg
+  License: runtime\LICENSE.txt
+- Pillow 12.3.0, Python Imaging Library contributors.
+  Source: PyPI official pillow-12.3.0-cp313-cp313-win_amd64.whl
+  License files: runtime\Lib\site-packages\pillow-12.3.0.dist-info\licenses
+  The wheel also carries notices for its bundled image codec libraries.
+- Native launcher compiled using Zig 0.13.0 (not required or bundled as a compiler).
+  Source included in native-host\portable-launcher.c.
+
+The distribution public key in extension\manifest.json fixes the unpacked Chrome extension ID.
+No private key or browser credentials are included.

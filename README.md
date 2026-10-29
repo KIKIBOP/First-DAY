@@ -1,36 +1,95 @@
-# First-DAY
+# 网页影片一键采集助手 v0.1.2
 
-Windows 11 桌面软件项目，目前处于开发约定初始化阶段。
+Windows 11 辅助程序与 Chrome Manifest V3 扩展：从当前帖子提取标题、两张原图和磁力链接，保存图片，并按选项请求 BitComet。开发约定见 [AGENTS.md](AGENTS.md)。
 
-## 当前状态
+本版本以用户上传的 `MediaCollector-Portable-x64.7z` 为基础，保留运行目录中已放宽的预览图后缀规则，并同步到源码。扩展和本地协议版本统一为 `0.1.2`。
 
-- 尚无应用代码、依赖清单、测试套件或构建配置，功能需求及技术栈待确定。
-- 长期开发规范保存在根目录 [AGENTS.md](AGENTS.md)。
-- `.gitignore` 排除本地敏感配置、缓存、日志和构建产物，并预留 Python 常用忽略规则；后续按实际技术栈调整。
-- 开发环境检查记录及本阶段验证范围见 [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)。
+## 修复内容
 
-## 开发与版本管理
+- 新建目录按清理后的帖子标题命名，不再追加 `[b78f945859]` 一类摘要。不同帖子真正重名时使用 `标题 (2)`、`标题 (3)`，不覆盖已有目录。
+- 原图优先通过 Chrome 当前网络和可用会话获取，再分块传给本地程序校验、保存，补上旧版 Python 直接下载不能使用浏览器会话及代理的路径。
+- 支持附件服务器返回通用二进制 MIME 或不返回 MIME；仍完整解码图片，拒绝 HTML、截断数据及明确冲突的图片 MIME。
+- 已有完整原图按记录和 SHA-256 跳过；只获取缺失或不匹配的图片。浏览器获取失败时记录原因，再尝试原有本地下载器。
 
-按“需求分析 → 编写代码 → 本地测试 → 修复问题 → 保存版本 → 汇报结果”开展开发。按完整任务保存合理的本地提交，默认不执行 GitHub Push 或创建 Pull Request。
+尚未收到用户设备上的具体错误文字，因此尚不能确认此次设备上的确切失败原因。实际测试范围及限制见 [docs/TEST_RESULTS.md](docs/TEST_RESULTS.md)。
 
-在远程同步前检查文件和差异，确认不含凭据、无关文件及不必要的构建产物。远程同步须符合 `AGENTS.md` 中的授权规则。
+## 便携版使用与更新
 
-## 构建与测试
+1. 等待当前采集结束，将完整便携包解压或更新到固定本地目录，保留整个 `runtime` 文件夹。
+2. 双击 `首次使用-注册.bat`，完成自检并选择影片保存根目录。
+3. Chrome 打开 `chrome://extensions`，加载 `extension` 文件夹；已有扩展点击“重新加载”。
+4. 扩展设置中确认本地程序已连接，打开帖子并检查标题、两张原图地址和磁力。
+5. 首次保存图片时，允许 Chrome 访问**所识别的图片站点**；可在扩展详情中撤销授权。
+6. 如启用 BitComet，在其添加任务界面确认保存目录；发送磁力不代表添加成功或下载完成。
 
-当前没有可运行的软件，因此暂无应用启动、测试或打包命令，也没有 EXE 产物。
+本包带 Windows x64 启动器、Python 和 Pillow，普通用户无需安装 Python 或编译。固定扩展 ID 保持原值。本地程序和扩展必须一起更新；旧程序不支持新图片传输消息。
 
-本次检查环境为 Linux，未发现 .NET SDK、PowerShell 或 Windows 运行验证工具，尚不具备本项目 Windows 桌面应用的构建与实机验证条件。实际应用建立后，随选定技术栈提供依赖清单、可重复构建说明和可在 Windows 11 执行的打包脚本，并记录实际执行的测试。
+## 保存内容及旧目录
 
-## 源码备份与恢复
-
-重要阶段提供源码 ZIP，包含受版本管理的源码、资源、配置和说明；不含 Git 历史、凭据、本地环境、缓存或构建产物。初始化阶段只有开发规范和项目说明。
-
-可使用本地 Git 导出已提交版本，无需连接 GitHub：
-
-```sh
-git archive --format=zip --prefix=First-DAY/ --output=../First-DAY-source.zip HEAD
+```text
+影片保存根目录/
+  清理后的帖子标题/
+    封面原图.jpg
+    预览原图.jpg
+    metadata.json
+    磁力链接.txt       # 仅开启“保存磁力链接”时写入
 ```
 
-在 Windows 11 安装 Git 后也可在终端使用该命令。生成目录需有写权限。
+扩展名取自真实图片格式，保存原始字节，不使用缩略图或重新编码。`metadata.json` 仍用于来源识别、去重和完整性检查；本次未改变 JSON 的保存位置。
 
-恢复时将 ZIP 解压至独立目录，阅读 `AGENTS.md` 和本说明；源码 ZIP 不含 `.git`，不能用于恢复历史提交。需要历史记录时，应另外保留本地仓库或通过授权的 GitHub 流程获取仓库。
+**新命名规则只用于新建目录。** 已有带摘要目录在来源记录匹配时继续复用，保持 BitComet 的原保存路径可用。若需整理旧目录，先停止相关下载，保留 `metadata.json` 并在资源管理器改名，再更新 BitComet 中的路径；重新采集后刷新历史任务路径。标题及数字重名目录可重新识别。
+
+用户视频和未知同名文件不会被删除或覆盖。状态、历史、日志和传输暂存位于 `%LOCALAPPDATA%\ChromeMediaCollector`。正常结束或取消后清理暂存；超过一天的异常遗留暂存在下一次准备任务时清理。
+
+## 图片获取与权限
+
+后台浏览器请求使用当前可用 Cookie 和代理，不读取 Cookie 值，也不把 Cookie 传给本地程序。临时 Referer 规则仅匹配本扩展对所选原图路径的请求，使用帖子站点来源，不转发帖子查询参数；请求结束移除规则。
+
+每块最多 192 KiB 原始字节，单条 Native 消息低于 900000 字节；单图最多 25 MiB、最多 6000 万像素，Pillow 完整验证后才发布文件。权限被拒绝、取消、超时及错误页均有处理，图片失败不会显示为已保存。
+
+浏览器路径不自动跟随重定向；此类情况回退到原本逐跳验证的 Native 下载器。图片站点访问条件、Chrome 第三方 Cookie 设置或系统网络限制仍可能导致失败，应保留具体提示进一步适配。浏览器路径只获取主动授权的图片站点，拒绝 IP 字面量、本机域名和非 HTTP(S) URL。
+
+本地回退路径继续验证公开 DNS、标准端口、重定向及 HTTPS 证书/SNI；仍为直接连接，不使用浏览器代理。两种路径的权限和网络条件不同。
+
+实现依据：[Chrome 跨域请求](https://developer.chrome.com/docs/extensions/develop/concepts/network-requests)、[可选站点权限](https://developer.chrome.com/docs/extensions/reference/api/permissions)、[Cookie 行为](https://developer.chrome.com/docs/extensions/develop/concepts/storage-and-cookies)、[请求规则](https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest)。
+
+## 开发与验证
+
+源码要求 Python 3.11+，运行依赖为 Pillow。开发测试另需 Node.js、Playwright 和本机 Chromium。Windows 设置 `CHROMIUM_PATH` 为实际 chrome.exe 路径。
+
+```bat
+py -3 -m pip install -r requirements.txt
+py -3 -m unittest discover -s tests -p "test_*.py" -v
+npm install
+npm test
+```
+
+浏览器测试拦截页面网络，Chrome 权限、Native 及规则 API 使用模拟；不能代替 Windows 11 的真实 Chrome/BitComet 联动测试。Windows 手工检测可运行 `py -3 tests\windows_integration.py`，默认不提交磁力。
+
+## Windows 构建与源码恢复
+
+在 Windows 11 从源码构建独立 EXE：
+
+```bat
+installer\build_exe.bat
+```
+
+脚本使用 PyInstaller 生成 `dist\MediaCollectorHost.exe`，随后通过 `installer\install_host.bat` 注册。当前会话未执行 Windows EXE 编译或真机测试。
+
+利用已有便携包重新生成完整便携 ZIP：
+
+```bat
+py -3 tools\build_portable.py --base-package "D:\旧版便携包\MediaCollector-Portable-x64" --out-dir "D:\新构建目录"
+```
+
+源码需位于 Git 工作区并已加入暂存区。脚本校验旧包的运行文件，复用其 Windows x64 启动器和 Python/Pillow；同步当前扩展及本地源码，重建 `source-code.zip` 和所有交付文件的 SHA-256。此操作不表示重新编译或验证了 Windows 二进制。
+
+ZIP 时间戳来自 Git 提交时间或 `SOURCE_DATE_EPOCH`。源码包包含受版本管理的源码、资源、配置、测试和构建说明，不含 `.git` 历史、运行环境、缓存或产物。解压源码包后可在独立目录初始化 Git、安装依赖并构建。旧版历史说明保留在 `docs/LEGACY_README.md`，不作为当前操作指南。
+
+## 项目结构与版本管理
+
+`extension/` 包含界面、网站适配器及浏览器图片传输；`native-host/` 包含协议、任务、目录及图片处理；`installer/` 和 `tools/` 提供 Windows 安装、构建入口；`tests/`、`docs/` 保存验证与说明。
+
+Host 名称为 `com.chrome_media_collector.host`，协议见 [docs/PROTOCOL.md](docs/PROTOCOL.md)。日志为 `%LOCALAPPDATA%\ChromeMediaCollector\collector.log`。取消不会撤回已交给 BitComet 的任务。
+
+默认只保存合理的本地提交，不自动 Push 或创建 PR；远程同步前按 `AGENTS.md` 检查敏感信息和无关文件。

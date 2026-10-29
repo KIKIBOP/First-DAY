@@ -37,3 +37,14 @@ htmlcov/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Desktop package inputs and JavaScript dependencies.
+/runtime/
+/MediaCollectorHost.exe
+/source-code.zip
+/SHA256SUMS.txt
+/build-info.json
+/com.chrome_media_collector.host.json
+node_modules/
+/coverage/
+*.7z

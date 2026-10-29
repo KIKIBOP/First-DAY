@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-23",
+  "timezone": "Asia/Shanghai",
+  "environment": "Linux",
+  "python": "3.12.14",
+  "python_tests": {
+    "passed": 24,
+    "failed": 0
+  },
+  "dom": {
+    "ok": true,
+    "checks": {
+      "主标题与实体解码": true,
+      "正文区域两张图": true,
+      "优先外层原图链接": true,
+      "懒加载原图": true,
+      "磁力提取及去重": true,
+      "BTv2": true,
+      "拒绝伪磁力": true,
+      "原图已确认": true,
+      "拒绝未知结构": true,
+      "懒加载回退": true,
+      "srcset最高分辨率": true,
+      "不猜测原图且警告": true,
+      "用户范例完整标题含分类": true,
+      "用户范例磁力完整匹配与去重": true,
+      "用户范例两张图片文件名匹配": true,
+      "Discuz原图属性优先": true,
+      "真实目标域名适配候选": true,
+      "真实HTML完整标题含分类": true,
+      "真实HTML磁力精确匹配": true,
+      "真实HTML附件提示文件名配对": true,
+      "真实HTML原图地址精确匹配": true,
+      "真实HTML不保存none.gif占位图": true,
+      "真实HTML无识别歧义": true,
+      "原始标题保留内部空格": true
+    }
+  },
+  "popup_mock_api": {
+    "ok": true,
+    "checks": {
+      "中文标题显示": true,
+      "单磁力自动选择": true,
+      "无远程图片重取": true,
+      "当前标签页数据提交": true,
+      "不默认重发磁力": true,
+      "重开弹窗恢复查询": true,
+      "打开影片目录可用": true
+    }
+  },
+  "windows": "待真机验证",
+  "bitcomet": "没有提交真实磁力任务",
+  "live_image_download": "未执行；已验证真实HTML中的原图URL提取"
+}

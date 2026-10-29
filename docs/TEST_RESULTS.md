@@ -1,0 +1,36 @@
+# v0.1.2 实际验证记录
+
+日期：2026-10-29（Asia/Shanghai）。环境：Linux，Python 3.12.14，本机 Chromium。
+
+## 已执行
+
+- Python：`python3 -m unittest discover -s tests -p "test_*.py" -v`，**39 项通过，0 失败**。
+- 浏览器：`npm test`，**53 项检查通过，0 失败**：DOM 24 项、Popup 模拟 Chrome API 8 项、原图传输/后台模拟 API 21 项。
+- Python 原始日志：`python-tests.txt`；浏览器原始日志：`browser-tests.txt`；机器可读明细：`test-results.json`。
+
+## 新增回归覆盖
+
+标题目录不附加摘要；同名帖子按数字分开；未知同名目录及视频保留；复用来源匹配的旧目录；普通二进制 MIME 及真实图片解码；浏览器原始字节顺序分块接收；HTML、乱序、超限、非法序号和篡改拒绝；缺失图片按槽位获取；准备阶段取消及中断清理；启动回复丢失时不清理活跃 Worker 的图片。
+
+真实 Python Native 协议进程接收原图分块，并由其启动的独立 Worker 将两张 PNG 原始字节保存到标题目录，结果已与输入逐字节核对。另验证直接 Native 网络下载失败时采用浏览器已传入的原图；这不是 Windows Chrome Native Messaging 联动证明。
+
+浏览器测试覆盖 1,200,001 字节原图数据的分块、会话请求参数、站点来源最小请求、临时 Referer 规则作用范围及清理、403 记录和回退、拒绝本地 URL、准备任务立即可查询、关闭 Native 长连接。Chrome 权限/规则/Native API 均明确模拟，页面请求由测试拦截。
+
+## 环境限制与未验证
+
+额外尝试在隔离 Linux Chromium 配置中加载真实扩展，平台返回：`Loading of unpacked extensions is disabled by the administrator.` 未修改管理员策略，也未把此项记为通过。
+
+未运行 Windows EXE、Windows 11 文件系统验证、真实 Chrome Native Messaging、真实网站图片请求或 BitComet 提交。未收到本次用户电脑上的错误文字，不能认定已复现其确切失败原因。浏览器会话及代理路径仍需在用户 Windows 环境确认。
+
+便携交付复用用户原包内的 Windows 启动器、CPython 和 Pillow，不声称本次重新编译或真机运行了二进制。构建脚本独立校验输入运行文件 SHA-256、PE x64 和扩展 ID；导出后核对 ZIP、源码一致性及新校验清单。
+
+## Windows 手工验证
+
+1. 等待旧任务结束，完整更新并重新注册；Chrome 扩展重新加载。
+2. 选取此前未采集的新帖子，确认新目录无摘要；旧目录复用不是新建命名验证。
+3. 在浏览器中确认原图可打开，点击采集并允许访问实际图片站点。核对两张图片可正常打开、任务没有图片失败事件。
+4. 重复采集，确认不重复取完整图片；删除一张测试图片后点击检查缺失文件，仅补齐该图。
+5. 取图过程中取消，确认不继续提交磁力；如失败，保留插件错误文字或对应日志继续诊断。
+6. 最后测试 Chrome 与 BitComet 联动，手工确认任务保存位置。
+
+旧版测试和使用记录单独保留在 `LEGACY_TEST_RESULTS.md`、`legacy-test-results.json` 和 `LEGACY_README.md`。

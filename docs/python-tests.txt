@@ -1,0 +1,44 @@
+test_browser_originals_save_even_when_native_network_would_fail (test_fixes.FixTests.test_browser_originals_save_even_when_native_network_would_fail) ... ok
+test_cancel_preparation_prevents_worker_and_cleans_cache (test_fixes.FixTests.test_cancel_preparation_prevents_worker_and_cleans_cache) ... ok
+test_complete_existing_images_are_not_downloaded_again (test_fixes.FixTests.test_complete_existing_images_are_not_downloaded_again) ... ok
+test_failed_browser_download_falls_back_and_records_reason (test_fixes.FixTests.test_failed_browser_download_falls_back_and_records_reason) ... ok
+test_generic_mime_preserves_original_bytes (test_fixes.FixTests.test_generic_mime_preserves_original_bytes) ... ok
+test_html_is_not_published_as_an_image (test_fixes.FixTests.test_html_is_not_published_as_an_image) ... ok
+test_interrupted_preparation_is_marked_failed (test_fixes.FixTests.test_interrupted_preparation_is_marked_failed) ... ok
+test_legacy_destination_is_reused_without_renaming (test_fixes.FixTests.test_legacy_destination_is_reused_without_renaming) ... ok
+test_lost_finish_response_does_not_remove_active_worker_images (test_fixes.FixTests.test_lost_finish_response_does_not_remove_active_worker_images) ... ok
+test_out_of_order_or_invalid_chunk_is_rejected (test_fixes.FixTests.test_out_of_order_or_invalid_chunk_is_rejected) ... ok
+test_real_native_protocol_accepts_chunks_then_worker_saves_images (test_fixes.FixTests.test_real_native_protocol_accepts_chunks_then_worker_saves_images) ... ok
+test_size_limit_and_task_boundaries (test_fixes.FixTests.test_size_limit_and_task_boundaries) ... ok
+test_title_only_and_numbered_collisions (test_fixes.FixTests.test_title_only_and_numbered_collisions) ... ok
+test_unrelated_user_directory_is_preserved (test_fixes.FixTests.test_unrelated_user_directory_is_preserved) ... ok
+test_url_or_byte_tampering_is_rejected (test_fixes.FixTests.test_url_or_byte_tampering_is_rejected) ... ok
+test_bitcomet_bad_config (test_native.NativeTests.test_bitcomet_bad_config) ... ok
+test_cancel (test_native.NativeTests.test_cancel) ... ok
+test_chinese_folder_and_collision (test_native.NativeTests.test_chinese_folder_and_collision) ... ok
+test_dispatch_global_and_explicit_resubmit (test_native.NativeTests.test_dispatch_global_and_explicit_resubmit) ... ok
+test_download_failure_and_metadata (test_native.NativeTests.test_download_failure_and_metadata) ... ok
+test_download_size_limit (test_native.NativeTests.test_download_size_limit) ... ok
+test_duplicate_collection_preserves_video (test_native.NativeTests.test_duplicate_collection_preserves_video) ... ok
+test_duplicate_dispatch_once (test_native.NativeTests.test_duplicate_dispatch_once) ... ok
+test_image_actual_format_and_mime (test_native.NativeTests.test_image_actual_format_and_mime) ... ok
+test_input_validation (test_native.NativeTests.test_input_validation) ... ok
+test_invalid_json_type (test_native.NativeTests.test_invalid_json_type) ... ok
+test_magnet_base32_and_hybrid_aliases (test_native.NativeTests.test_magnet_base32_and_hybrid_aliases) ... ok
+test_magnets_v1_v2 (test_native.NativeTests.test_magnets_v1_v2) ... ok
+test_native_roundtrip_unicode (test_native.NativeTests.test_native_roundtrip_unicode) ... ok
+test_native_size_and_truncation (test_native.NativeTests.test_native_size_and_truncation) ... ok
+test_path_traversal_and_symlink (test_native.NativeTests.test_path_traversal_and_symlink) ... ok
+test_pinned_download_checks_bytes (test_native.NativeTests.test_pinned_download_checks_bytes) ... ok
+test_protocol_process_multiple_messages (test_native.NativeTests.test_protocol_process_multiple_messages) ... ok
+test_redirect_rechecks_destination (test_native.NativeTests.test_redirect_rechecks_destination) ... ok
+test_ssrf (test_native.NativeTests.test_ssrf) ... ok
+test_stale_task (test_native.NativeTests.test_stale_task) ... ok
+test_user_image_never_overwritten (test_native.NativeTests.test_user_image_never_overwritten) ... ok
+test_windows_names (test_native.NativeTests.test_windows_names) ... ok
+test_worker_survives_native_disconnect (test_native.NativeTests.test_worker_survives_native_disconnect) ... ok
+
+----------------------------------------------------------------------
+Ran 39 tests in 0.550s
+
+OK
