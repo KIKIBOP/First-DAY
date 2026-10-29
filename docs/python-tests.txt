@@ -37,6 +37,12 @@ test_stale_task (test_native.NativeTests.test_stale_task) ... ok
 test_user_image_never_overwritten (test_native.NativeTests.test_user_image_never_overwritten) ... ok
 test_windows_names (test_native.NativeTests.test_windows_names) ... ok
 test_worker_survives_native_disconnect (test_native.NativeTests.test_worker_survives_native_disconnect) ... ok
+test_existing_root_check_preserves_every_setting (test_settings.SettingsPersistenceTests.test_existing_root_check_preserves_every_setting) ... ok
+test_first_registration_requests_root_without_creating_settings (test_settings.SettingsPersistenceTests.test_first_registration_requests_root_without_creating_settings) ... ok
+test_fresh_native_process_restores_all_saved_settings (test_settings.SettingsPersistenceTests.test_fresh_native_process_restores_all_saved_settings) ... ok
+test_rejected_update_does_not_overwrite_saved_settings (test_settings.SettingsPersistenceTests.test_rejected_update_does_not_overwrite_saved_settings) ... ok
+test_selecting_new_root_keeps_existing_options (test_settings.SettingsPersistenceTests.test_selecting_new_root_keeps_existing_options) ... ok
+test_unavailable_root_fails_without_erasing_settings (test_settings.SettingsPersistenceTests.test_unavailable_root_fails_without_erasing_settings) ... ok
 test_bundle_matches_recorded_provenance (test_tls.TLSConfigurationTests.test_bundle_matches_recorded_provenance) ... ok
 test_certificate_failure_is_not_retried_with_weaker_settings (test_tls.TLSConfigurationTests.test_certificate_failure_is_not_retried_with_weaker_settings) ... ok
 test_default_store_remains_verified_and_has_public_roots (test_tls.TLSConfigurationTests.test_default_store_remains_verified_and_has_public_roots) ... ok
@@ -48,6 +54,6 @@ test_trusted_ca_does_not_allow_wrong_hostname (test_tls.TLSHandshakeTests.test_t
 test_unknown_issuer_reproduces_reported_certificate_error (test_tls.TLSHandshakeTests.test_unknown_issuer_reproduces_reported_certificate_error) ... ok
 
 ----------------------------------------------------------------------
-Ran 48 tests in 0.866s
+Ran 54 tests in 1.360s
 
 OK

@@ -1,6 +1,6 @@
 
-> chrome-media-collector-tests@0.1.3 test
-> node tests/browser.cjs && node tests/popup.cjs && node tests/downloads.cjs
+> chrome-media-collector-tests@0.1.4 test
+> node tests/browser.cjs && node tests/popup.cjs && node tests/downloads.cjs && node tests/options.cjs
 
 {
   "ok": true,
@@ -68,6 +68,22 @@
     "弹窗关闭前已有可查询任务": true,
     "后台完成后关闭Native长连接": true,
     "页面内容脚本不能请求特权下载": true
+  }
+}
+{
+  "ok": true,
+  "checks": {
+    "设置标签页通过后台读取本地配置": true,
+    "已保存的勾选项及重试次数正确恢复": true,
+    "重新打开后从新Native进程恢复设置": true,
+    "设置标签页可以检测BitComet关联": true,
+    "安装存在但未关联时给出明确说明": true,
+    "连接失败时禁止保存空表单": true,
+    "连接错误保留Chrome具体原因": true,
+    "连接失败不会覆盖磁盘设置": true,
+    "重连后恢复已有设置且无需重新填写": true,
+    "历史读取失败不误报设置连接中断": true,
+    "网页内容脚本及未知扩展页面不能读取本地配置": true
   }
 }
 npm notice

@@ -3,3 +3,4 @@
 .preview-tile{width:calc(50% - 4px);min-width:0}.preview-tile img{width:100%!important}.preview-placeholder{height:90px;display:flex;align-items:center;justify-content:center;background:#f3f6fa;border-radius:6px;font-size:11px;color:#728297}
 
 body:not(.options){max-height:600px;overflow-y:auto}.controls{position:sticky;bottom:0;padding-top:8px;background:#f3f6fa;z-index:2}.controls .actions{padding-bottom:8px;margin-bottom:0}
+.options fieldset{border:0;padding:0;margin:12px 0;min-width:0}.options legend{padding:0}

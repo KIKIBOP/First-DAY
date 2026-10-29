@@ -1,9 +1,9 @@
 {
   "name": "chrome-media-collector-tests",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "scripts": {
-    "test": "node tests/browser.cjs && node tests/popup.cjs && node tests/downloads.cjs"
+    "test": "node tests/browser.cjs && node tests/popup.cjs && node tests/downloads.cjs && node tests/options.cjs"
   },
   "devDependencies": {
     "playwright": "1.62.1"

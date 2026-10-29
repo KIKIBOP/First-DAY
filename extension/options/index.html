@@ -1,1 +1,30 @@
-<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>采集助手设置</title><link rel="stylesheet" href="../popup.css"><body class="options"><header><span class="badge">本地辅助程序</span><h1>采集设置</h1><p id="connection">正在连接…</p></header><main><section><label>默认保存根目录（本地绝对路径）<input id="root" type="text" placeholder="D:\影片收藏"></label><label>BitComet 安装路径（检测 / 校验用；调用采用系统磁力协议）<input id="bitcomet_path" type="text" placeholder="可留空以检测协议关联"></label><div id="checks"></div><label>图片失败重试次数（0–5）<input id="retries" type="number" min="0" max="5"></label><label>日志级别<select id="log_level"><option>INFO</option><option>DEBUG</option><option>WARNING</option><option>ERROR</option></select></label><button id="save" class="primary">保存设置</button><button id="detect">检测 BitComet</button><pre id="status" aria-live="polite"></pre></section><section><h2>采集历史（最近 100 条）</h2><div id="history"></div></section><p class="muted">图片下载由本地程序完成，不会导出浏览器 Cookie。受登录保护的图片首版可能下载失败。调用磁力协议后需在 BitComet 中确认影片目录。</p></main><script type="module" src="options.js"></script></body></html>
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>采集助手设置</title>
+<link rel="stylesheet" href="../popup.css">
+<body class="options">
+<header><span class="badge">本地辅助程序</span><h1>采集设置</h1><p id="connection" aria-live="polite">正在连接…</p></header>
+<main>
+  <section>
+    <p id="settingsHint" class="muted">正在读取已保存设置…</p>
+    <button id="reconnect" hidden>重新连接本地程序</button>
+    <fieldset id="settingsFields" disabled>
+      <legend class="muted">本机采集设置</legend>
+      <label>默认保存根目录（本地绝对路径）<input id="root" type="text" placeholder="D:\影片收藏"></label>
+      <label>BitComet 安装路径（检测 / 校验用；调用采用系统磁力协议）<input id="bitcomet_path" type="text" placeholder="可留空以检测协议关联"></label>
+      <div id="checks"></div>
+      <label>图片失败重试次数（0–5）<input id="retries" type="number" min="0" max="5"></label>
+      <label>日志级别<select id="log_level"><option>INFO</option><option>DEBUG</option><option>WARNING</option><option>ERROR</option></select></label>
+      <button id="save" class="primary">保存设置</button>
+      <button id="detect">检测 BitComet</button>
+    </fieldset>
+    <pre id="status" aria-live="polite"></pre>
+  </section>
+  <section><h2>采集历史（最近 100 条）</h2><div id="history"></div></section>
+  <p class="muted">原图优先通过 Chrome 获取，再由本地程序校验保存；不会导出浏览器 Cookie。调用磁力协议后需在 BitComet 中确认影片目录。</p>
+</main>
+<script type="module" src="options.js"></script>
+</body>
+</html>

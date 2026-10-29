@@ -4,7 +4,15 @@ import {downloadImages} from './browser_images.js';
 import {imageOrigins} from './image_access.js';
 
 chrome.runtime.onMessage.addListener((message,sender,respond)=>{
-  if(sender.id!==chrome.runtime.id || sender.tab || !message || message.route!=='native') return;
+  if(sender.id!==chrome.runtime.id || !message || message.route!=='native') return;
+  // Options may open in a tab. Authorize the extension page URL, not tab presence.
+  let ownPage=false;
+  try {
+    const url=new URL(sender.url);
+    ownPage=url.protocol==='chrome-extension:'&&url.hostname===chrome.runtime.id&&
+      ['/popup.html','/options/index.html'].includes(url.pathname);
+  } catch {}
+  if(!ownPage) { respond({ok:false,error:'仅允许插件弹窗和设置页访问本地程序'}); return; }
   if(message.type==='start_collection' && message.data?.options?.save_images) {
     (async()=>{
       const data=message.data;

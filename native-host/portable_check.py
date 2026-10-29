@@ -23,6 +23,8 @@ def main():
     stream=io.BytesIO(result.stdout);status=read_message(stream);settings=read_message(stream)
     assert status and status.get('ok') and settings and settings.get('ok'), 'Native 二进制协议自检失败'
     assert read_message(stream) is None,'Native stdout 出现额外数据'
+    assert status['data']['version']==manifest['version'], '扩展与本地程序版本不一致，请完整更新 extension 和 native-host'
+    print('本地程序版本：'+status['data']['version']+' / 扩展版本：'+manifest['version'])
     print(f'内置 Python {sys.version.split()[0]} / Pillow {PIL.__version__} / Windows x64')
     trust=trust_status()
     assert trust['certificate_verification'] and trust['hostname_verification']
