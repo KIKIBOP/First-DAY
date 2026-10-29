@@ -1,5 +1,5 @@
 
-> chrome-media-collector-tests@0.1.5 test
+> chrome-media-collector-tests@0.1.6 test
 > node tests/browser.cjs && node tests/popup.cjs && node tests/downloads.cjs && node tests/options.cjs
 
 {
@@ -37,16 +37,16 @@
     "中文标题显示": true,
     "单磁力自动选择": true,
     "无远程图片重取": true,
-    "默认宽高生效且采集按钮无需滚动": true,
+    "固定宽高生效且采集按钮无需滚动": true,
     "当前标签页数据提交": true,
     "不默认重发磁力": true,
     "仅请求当前图片站点": true,
     "重开弹窗恢复查询": true,
     "打开影片目录可用": true,
     "展开来源后操作区仍可见且原图地址保留": true,
-    "重新打开应用已保存的宽高": true,
-    "较小可用空间不产生横向溢出且按钮可达": true,
-    "无效尺寸回退默认值": true
+    "旧版保存的尺寸不再影响弹窗": true,
+    "初始25像素视口仍提供完整内容尺寸": true,
+    "按内容尺寸展开后无横向溢出且操作区可见": true
   }
 }
 {
@@ -91,10 +91,7 @@
     "网页内容脚本及未知扩展页面不能读取本地配置": true,
     "显示当前实际分配的弹窗快捷键": true,
     "快捷键按钮打开Chrome原生配置页": true,
-    "快捷键未分配时提示手动设置": true,
-    "本地程序离线时仍可保存并恢复弹窗大小": true,
-    "尺寸超限不会覆盖已保存值": true,
-    "恢复默认尺寸不修改采集配置": true
+    "快捷键未分配时提示手动设置": true
   }
 }
 npm notice

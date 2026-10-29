@@ -1,7 +1,5 @@
 import {native,$,report} from './common.js';
 import {imageOrigins} from './image_access.js';
-import {readLayout,applyLayout} from './ui_preferences.js';
-readLayout().then(applyLayout).catch(()=>{});
 let page, cfg, taskId, folder='', timer;
 const terminal=['completed','partial','failed','cancelled','interrupted'];
 const stateNames={queued:'排队中',running:'采集中',completed:'采集完成',partial:'部分完成',failed:'失败',cancelled:'已取消',interrupted:'已中断'};

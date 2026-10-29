@@ -1,18 +1,4 @@
 import {native,$,report} from '../common.js';
-import {DEFAULT_LAYOUT,readLayout,saveLayout} from '../ui_preferences.js';
-
-function fillLayout(layout) {
-  $('popupWidth').value=layout.width;$('popupHeight').value=layout.height;
-}
-async function storeLayout(layout) {
-  try {
-    await saveLayout(layout);fillLayout(layout);
-    $('layoutStatus').textContent='弹窗大小已保存，下次打开时生效。';
-  } catch(e) { $('layoutStatus').textContent=e.message; }
-}
-$('saveLayout').onclick=()=>storeLayout({width:Number($('popupWidth').value),height:Number($('popupHeight').value)});
-$('resetLayout').onclick=()=>storeLayout(DEFAULT_LAYOUT);
-readLayout().then(fillLayout).catch(e=>{$('layoutStatus').textContent='无法读取弹窗大小：'+e.message;});
 $('shortcuts').onclick=()=>chrome.tabs.create({url:'chrome://extensions/shortcuts'}).catch(e=>{$('shortcutStatus').textContent=e.message;});
 (async()=>{
   try {

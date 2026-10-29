@@ -36,9 +36,9 @@ const {chromium}=require('playwright');const path=require('node:path');const fs=
   checks['中文标题显示']=(await page.locator('#title').textContent()).includes('中文と日本語');
   checks['单磁力自动选择']=!!(await page.locator('#magnets').inputValue());
   checks['无远程图片重取']=await page.locator('img[src^="http"]').count()===0;
-  checks['默认宽高生效且采集按钮无需滚动']=await page.evaluate(()=>{
+  checks['固定宽高生效且采集按钮无需滚动']=await page.evaluate(()=>{
     const body=document.body.getBoundingClientRect(),button=document.getElementById('collect').getBoundingClientRect();
-    return body.width===640&&body.height===560&&button.bottom<=body.bottom&&button.top>0;
+    return body.width===500&&body.height===580&&button.bottom<=body.bottom&&button.top>0;
   });
   await page.locator('#collect').click();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('采集完成'));
   const payload=await page.evaluate(()=>calls.find(c=>c.type==='start_collection').data);
@@ -55,18 +55,21 @@ const {chromium}=require('playwright');const path=require('node:path');const fs=
     return button.bottom<=document.body.getBoundingClientRect().bottom&&document.querySelectorAll('#imageSources p').length===2&&document.getElementById('imageSources').textContent.includes('https://cdn.example.com/preview.webp');
   });
   await page.evaluate(()=>localStorage.popupLayout=JSON.stringify({width:780,height:420}));
-  await page.reload();await page.waitForFunction(()=>getComputedStyle(document.body).width==='780px');
-  checks['重新打开应用已保存的宽高']=await page.evaluate(()=>document.body.getBoundingClientRect().height===420&&document.getElementById('collect').getBoundingClientRect().bottom<=420);
-  await page.setViewportSize({width:460,height:400});
-  checks['较小可用空间不产生横向溢出且按钮可达']=await page.evaluate(()=>{
-    const body=document.body.getBoundingClientRect(),button=document.getElementById('collect').getBoundingClientRect();
-    return body.width<=460&&body.height<=400&&document.documentElement.scrollWidth<=460&&button.bottom<=400;
-  });
-  await page.setViewportSize({width:800,height:600});
-  await page.evaluate(()=>localStorage.popupLayout=JSON.stringify({width:'10000px',height:-1}));
   await page.reload();await page.waitForFunction(()=>!document.getElementById('collect').disabled);
-  checks['无效尺寸回退默认值']=await page.evaluate(()=>document.body.getBoundingClientRect().width===640&&document.body.getBoundingClientRect().height===560);
-  if(process.env.POPUP_SCREENSHOT)await page.screenshot({path:process.env.POPUP_SCREENSHOT,fullPage:true});
+  checks['旧版保存的尺寸不再影响弹窗']=await page.evaluate(()=>document.body.getBoundingClientRect().width===500&&document.body.getBoundingClientRect().height===580);
+  // Simulate the initial tiny viewport before a popup host negotiates content size.
+  // This is a layout regression check, not an actual Chrome extension host test.
+  await page.setViewportSize({width:25,height:25});
+  await page.reload();await page.waitForFunction(()=>!document.getElementById('collect').disabled);
+  const intrinsic=await page.evaluate(()=>{
+    const body=document.body.getBoundingClientRect();
+    return {width:body.width,height:body.height,rootWidth:document.documentElement.scrollWidth,
+      rootHeight:document.documentElement.scrollHeight,contentHeight:document.querySelector('.popup-content').clientHeight};
+  });
+  checks['初始25像素视口仍提供完整内容尺寸']=intrinsic.width===500&&intrinsic.height===580&&intrinsic.rootWidth>=500&&intrinsic.rootHeight>=580&&intrinsic.contentHeight>200;
+  await page.setViewportSize({width:500,height:580});
+  checks['按内容尺寸展开后无横向溢出且操作区可见']=await page.evaluate(()=>document.documentElement.scrollWidth===500&&document.getElementById('collect').getBoundingClientRect().bottom<=580);
+  if(process.env.POPUP_SCREENSHOT)await page.locator('body').screenshot({path:process.env.POPUP_SCREENSHOT});
   const result={ok:Object.values(checks).every(Boolean),checks};console.log(JSON.stringify(result,null,2));if(!result.ok)process.exitCode=1;
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

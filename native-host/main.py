@@ -8,7 +8,7 @@ from tls_config import trust_status
 def dispatch(request):
     kind=request.get('type'); data=request.get('data',{})
     if not isinstance(data,dict): raise ValueError('data 必须为对象')
-    if kind=='get_status': return {'connected':True,'version':'0.1.5','history':task_manager.history(),'bitcomet':check_bitcomet(settings()),'https':trust_status()}
+    if kind=='get_status': return {'connected':True,'version':'0.1.6','history':task_manager.history(),'bitcomet':check_bitcomet(settings()),'https':trust_status()}
     if kind=='get_settings': return settings()
     if kind=='update_settings': return update_settings(data)
     if kind=='start_collection': return task_manager.start(data)
