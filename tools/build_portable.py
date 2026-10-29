@@ -23,7 +23,7 @@ def tracked_files():
     result=subprocess.run(['git','ls-files','-z'],cwd=ROOT,capture_output=True,check=True)
     files=[ROOT/name for name in result.stdout.decode('utf-8').split('\0') if name]
     required={'AGENTS.md','README.md','.gitignore','.gitattributes','package.json','requirements.txt',
-              'extension/manifest.json','native-host/main.py','native-host/browser_images.py',
+              'extension/manifest.json','extension/ui_preferences.js','native-host/main.py','native-host/browser_images.py',
               'native-host/tls_config.py','native-host/certs/cacert.pem','native-host/certs/CERTIFI-LICENSE.txt','native-host/certs/provenance.json',
               'installer/build_exe.bat','tools/build_portable.py','register.ps1','extension-id.txt'}
     names={path.relative_to(ROOT).as_posix() for path in files}

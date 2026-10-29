@@ -38,7 +38,11 @@ const {spawnSync}=require('node:child_process');
     await page.addInitScript(()=>{
       const id='a'.repeat(32);
       window.nativeRequests=[];
-      window.chrome={runtime:{id,onMessage:{addListener:fn=>window.backgroundListener=fn},
+      window.openedTabs=[];
+      window.chrome={storage:{local:{get:async key=>({[key]:JSON.parse(localStorage.getItem('chrome_'+key)||'null')}),
+        set:async data=>{for(const [key,value] of Object.entries(data)) localStorage.setItem('chrome_'+key,JSON.stringify(value));}}},
+        commands:{getAll:async()=>[{name:'_execute_action',shortcut:sessionStorage.shortcut??'Alt+Shift+Y'}]},
+        tabs:{create:async detail=>openedTabs.push(detail)},runtime:{id,onMessage:{addListener:fn=>window.backgroundListener=fn},
         sendNativeMessage:async(host,request)=>{
           nativeRequests.push(request);
           const mode=sessionStorage.nativeMode;
@@ -91,6 +95,21 @@ const {spawnSync}=require('node:child_process');
         return before===nativeRequests.length;
       });
       checks['网页内容脚本及未知扩展页面不能读取本地配置']=denied;
+      checks['显示当前实际分配的弹窗快捷键']=(await page.locator('#shortcutStatus').textContent()).includes('Alt+Shift+Y');
+      await page.locator('#shortcuts').click();
+      checks['快捷键按钮打开Chrome原生配置页']=await page.evaluate(()=>openedTabs.at(-1).url==='chrome://extensions/shortcuts');
+      await page.evaluate(()=>{sessionStorage.nativeMode='offline';sessionStorage.shortcut='';});await page.reload();
+      await page.waitForFunction(()=>document.getElementById('connection').textContent.includes('未连接'));
+      checks['快捷键未分配时提示手动设置']=(await page.locator('#shortcutStatus').textContent()).includes('未读取到已分配');
+      await page.locator('#popupWidth').fill('740');await page.locator('#popupHeight').fill('480');await page.locator('#saveLayout').click();
+      await page.waitForFunction(()=>document.getElementById('layoutStatus').textContent.includes('已保存'));
+      await page.reload();await page.waitForFunction(()=>document.getElementById('popupWidth').value==='740');
+      checks['本地程序离线时仍可保存并恢复弹窗大小']=(await page.locator('#popupHeight').inputValue())==='480';
+      await page.locator('#popupWidth').fill('2000');await page.locator('#saveLayout').click();
+      await page.waitForFunction(()=>document.getElementById('layoutStatus').textContent.includes('宽度应为'));
+      checks['尺寸超限不会覆盖已保存值']=await page.evaluate(()=>JSON.parse(localStorage.chrome_popupLayout).width===740);
+      await page.locator('#resetLayout').click();await page.waitForFunction(()=>document.getElementById('popupWidth').value==='640');
+      checks['恢复默认尺寸不修改采集配置']=JSON.stringify(native({type:'get_settings'}).data)===saved;
     }
     const result={ok:Object.values(checks).every(Boolean),checks};
     console.log(JSON.stringify(result,null,2));if(!result.ok) process.exitCode=1;

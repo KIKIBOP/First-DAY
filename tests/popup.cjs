@@ -3,7 +3,7 @@ const {chromium}=require('playwright');const path=require('node:path');const fs=
 (async()=>{
  const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox','--allow-file-access-from-files','--disable-background-networking']});
  try{
-  const page=await browser.newPage({viewport:{width:460,height:1000}});
+  const page=await browser.newPage({viewport:{width:800,height:600}});
   const ext=path.resolve(__dirname,'../extension');
   await page.route('**/*',async route=>{
     const url=new URL(route.request().url());
@@ -28,7 +28,7 @@ const {chromium}=require('playwright');const path=require('node:path');const fs=
      case 'get_task_status':data={id:'a'.repeat(32),state:'completed',folder:'D:\\影片收藏\\示例',data:sample,events:['封面原图保存成功','预览原图保存成功','已发送至系统磁力链接处理程序，请在 BitComet 中确认。']};break;
      default:data={};
     }return {ok:true,data};
-   }},storage:{local:{get:async()=>({lastTask:localStorage.lastTask||undefined})}},tabs:{query:async()=>[{id:1,url:sample.url}]},scripting:{executeScript:async req=>req.files?[]:[{result:{page:sample}}]}};
+   }},storage:{local:{get:async key=>key==='lastTask'?{lastTask:localStorage.lastTask||undefined}:{popupLayout:JSON.parse(localStorage.popupLayout||'null')}}},tabs:{query:async()=>[{id:1,url:sample.url}]},scripting:{executeScript:async req=>req.files?[]:[{result:{page:sample}}]}};
   });
   await page.goto('http://127.0.0.1/popup.html');
   await page.waitForFunction(()=>!document.getElementById('collect').disabled);
@@ -36,6 +36,10 @@ const {chromium}=require('playwright');const path=require('node:path');const fs=
   checks['中文标题显示']=(await page.locator('#title').textContent()).includes('中文と日本語');
   checks['单磁力自动选择']=!!(await page.locator('#magnets').inputValue());
   checks['无远程图片重取']=await page.locator('img[src^="http"]').count()===0;
+  checks['默认宽高生效且采集按钮无需滚动']=await page.evaluate(()=>{
+    const body=document.body.getBoundingClientRect(),button=document.getElementById('collect').getBoundingClientRect();
+    return body.width===640&&body.height===560&&button.bottom<=body.bottom&&button.top>0;
+  });
   await page.locator('#collect').click();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('采集完成'));
   const payload=await page.evaluate(()=>calls.find(c=>c.type==='start_collection').data);
   checks['当前标签页数据提交']=payload.url==='https://example.com/thread-123.html'&&payload.images.length===2&&payload.magnets.length===1;
@@ -44,6 +48,24 @@ const {chromium}=require('playwright');const path=require('node:path');const fs=
   await page.reload();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('采集完成'));
   checks['重开弹窗恢复查询']=await page.evaluate(()=>calls.some(c=>c.type==='get_task_status'));
   checks['打开影片目录可用']=await page.locator('#open').isEnabled();
+  await page.locator('#pageDetails').evaluate(el=>el.open=true);
+  await page.locator('.popup-content').evaluate(el=>el.scrollTop=el.scrollHeight);
+  checks['展开来源后操作区仍可见且原图地址保留']=await page.evaluate(()=>{
+    const button=document.getElementById('collect').getBoundingClientRect();
+    return button.bottom<=document.body.getBoundingClientRect().bottom&&document.querySelectorAll('#imageSources p').length===2&&document.getElementById('imageSources').textContent.includes('https://cdn.example.com/preview.webp');
+  });
+  await page.evaluate(()=>localStorage.popupLayout=JSON.stringify({width:780,height:420}));
+  await page.reload();await page.waitForFunction(()=>getComputedStyle(document.body).width==='780px');
+  checks['重新打开应用已保存的宽高']=await page.evaluate(()=>document.body.getBoundingClientRect().height===420&&document.getElementById('collect').getBoundingClientRect().bottom<=420);
+  await page.setViewportSize({width:460,height:400});
+  checks['较小可用空间不产生横向溢出且按钮可达']=await page.evaluate(()=>{
+    const body=document.body.getBoundingClientRect(),button=document.getElementById('collect').getBoundingClientRect();
+    return body.width<=460&&body.height<=400&&document.documentElement.scrollWidth<=460&&button.bottom<=400;
+  });
+  await page.setViewportSize({width:800,height:600});
+  await page.evaluate(()=>localStorage.popupLayout=JSON.stringify({width:'10000px',height:-1}));
+  await page.reload();await page.waitForFunction(()=>!document.getElementById('collect').disabled);
+  checks['无效尺寸回退默认值']=await page.evaluate(()=>document.body.getBoundingClientRect().width===640&&document.body.getBoundingClientRect().height===560);
   if(process.env.POPUP_SCREENSHOT)await page.screenshot({path:process.env.POPUP_SCREENSHOT,fullPage:true});
   const result={ok:Object.values(checks).every(Boolean),checks};console.log(JSON.stringify(result,null,2));if(!result.ok)process.exitCode=1;
  }finally{await browser.close();}

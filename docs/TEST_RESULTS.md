@@ -1,14 +1,18 @@
-# v0.1.4 实际验证记录
+# v0.1.5 实际验证记录
 
 日期：2026-10-29（Asia/Shanghai）。环境：Linux，Python 3.12.14，本机 Chromium。
 
 ## 已执行
 
 - Python：`python3 -m unittest discover -s tests -p "test_*.py" -v`，**54 项通过，0 失败**。
-- 浏览器：`npm test`，**64 项检查通过，0 失败**：DOM 24 项、Popup 模拟 Chrome API 8 项、原图传输/后台模拟 API 21 项、设置页与真实 Python 协议 11 项。
+- 浏览器：`npm test`，**75 项检查通过，0 失败**：DOM 24 项、Popup 模拟 Chrome API 13 项、原图传输/后台模拟 API 21 项、设置页与真实 Python 协议 17 项。
 - Python 原始日志：`python-tests.txt`；浏览器原始日志：`browser-tests.txt`；机器可读明细：`test-results.json`。
 
 ## 新增回归覆盖
+
+本次检查默认 640×560、保存的 780×420 和可用区域 460×400 下的弹窗几何布局，采集按钮保持可见、无横向页面溢出；展开来源时保留两条原图地址，操作区不随内容滚走。无效尺寸回退默认。已在 Chromium 中目视检查中性示例截图 `popup-preview.png`。
+
+设置页在 Native 离线时可保存并恢复宽高；超限输入不覆盖已有值；恢复尺寸不修改采集配置。快捷键检测与 Chrome 页面跳转使用明确模拟的 `commands.getAll`、`tabs.create`，覆盖已分配和未分配结果。Manifest 声明 `_execute_action`，无需额外按键监听；本环境禁止加载真实扩展，未声称已经实测系统快捷键或真实弹窗宿主的自动尺寸。
 
 新增设置页测试先在 0.1.3 后台复现失败：同扩展 ID、扩展设置页 URL、带 `sender.tab` 的消息被忽略，无法读取保存目录。修正后同一测试通过。测试运行实际设置页、后台模块和 Python Native 协议子进程；Chrome 消息 API 及 Windows BitComet 检测结果明确模拟，不代表真实 Windows 联动。
 
@@ -34,6 +38,7 @@
 
 1. 等待旧任务结束，覆盖 `extension`、`native-host` 及根目录 `register.ps1`，保留原运行环境；Chrome 扩展重新加载。仅首次使用或移动程序目录后需重新注册。
 2. 设置页显示已连接，已有目录、勾选项自动恢复；修改保存后关闭再开，确认仍在。先确认连接，再检测 BitComet，区分安装路径与磁力关联。
+   设置宽高后重开菜单，确认大小和底部按钮位置；Chrome 内按 Alt+Shift+Y，若未触发则到 chrome://extensions/shortcuts 确认实际分配。
 3. 选取此前未采集的新帖子，确认新目录无摘要；旧目录复用不是新建命名验证。
 4. 在浏览器中确认原图可打开，点击采集并允许访问实际图片站点。核对两张图片可正常打开、任务没有图片失败事件。
 5. 重复采集，确认不重复取完整图片；删除一张测试图片后点击检查缺失文件，仅补齐该图。

@@ -1,5 +1,7 @@
 import {native,$,report} from './common.js';
 import {imageOrigins} from './image_access.js';
+import {readLayout,applyLayout} from './ui_preferences.js';
+readLayout().then(applyLayout).catch(()=>{});
 let page, cfg, taskId, folder='', timer;
 const terminal=['completed','partial','failed','cancelled','interrupted'];
 const stateNames={queued:'排队中',running:'采集中',completed:'采集完成',partial:'部分完成',failed:'失败',cancelled:'已取消',interrupted:'已中断'};
@@ -54,12 +56,14 @@ async function init(){
     if(result.error) throw Error(result.error);
     page=result.page;
     $('support').textContent='结构已识别';$('title').textContent=page.title;$('url').textContent=page.url;$('adapter').textContent=page.adapter;
-    for (const image of page.images){
+    for (const [index,image] of page.images.entries()){
+      const label=index===0?'封面原图':'预览原图';
       const tile=document.createElement('div');tile.className='preview-tile';
       if(image.preview && /^data:image\/png;base64,/.test(image.preview)){
-        const img=document.createElement('img');img.src=image.preview;img.alt=image.source;tile.append(img);
-      }else{const hint=document.createElement('div');hint.className='preview-placeholder';hint.textContent='图片已定位 · 缩略图受限';tile.append(hint);}
-      const p=document.createElement('p');p.className='muted';p.textContent=image.source+'：'+image.url;tile.append(p);$('previews').append(tile);
+        const img=document.createElement('img');img.src=image.preview;img.alt=label;tile.append(img);
+      }else{const hint=document.createElement('div');hint.className='preview-placeholder';hint.textContent='原图已定位';hint.title='网页限制缩略图显示，原图下载结果请查看操作状态';tile.append(hint);}
+      const caption=document.createElement('span');caption.className='preview-caption';caption.textContent=label;tile.append(caption);$('previews').append(tile);
+      const p=document.createElement('p');p.className='muted';p.textContent=label+' · '+image.source+'：'+image.url;$('imageSources').append(p);
     }
     $('counts').textContent=`预览图片 ${page.images.length} 张 · 磁力链接 ${page.magnets.length} 条`;
     $('warnings').textContent=page.warnings.join('；');$('confirmWrap').hidden=!page.warnings.length;

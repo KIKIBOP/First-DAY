@@ -1,4 +1,28 @@
 import {native,$,report} from '../common.js';
+import {DEFAULT_LAYOUT,readLayout,saveLayout} from '../ui_preferences.js';
+
+function fillLayout(layout) {
+  $('popupWidth').value=layout.width;$('popupHeight').value=layout.height;
+}
+async function storeLayout(layout) {
+  try {
+    await saveLayout(layout);fillLayout(layout);
+    $('layoutStatus').textContent='弹窗大小已保存，下次打开时生效。';
+  } catch(e) { $('layoutStatus').textContent=e.message; }
+}
+$('saveLayout').onclick=()=>storeLayout({width:Number($('popupWidth').value),height:Number($('popupHeight').value)});
+$('resetLayout').onclick=()=>storeLayout(DEFAULT_LAYOUT);
+readLayout().then(fillLayout).catch(e=>{$('layoutStatus').textContent='无法读取弹窗大小：'+e.message;});
+$('shortcuts').onclick=()=>chrome.tabs.create({url:'chrome://extensions/shortcuts'}).catch(e=>{$('shortcutStatus').textContent=e.message;});
+(async()=>{
+  try {
+    const action=(await chrome.commands.getAll()).find(x=>x.name==='_execute_action');
+    $('shortcutStatus').textContent=action?.shortcut?'打开采集菜单：'+action.shortcut+'（Chrome 窗口内生效）':
+      '当前未读取到已分配的快捷键，请到 Chrome 快捷键页面查看或设置。建议 Alt+Shift+Y。';
+  } catch {
+    $('shortcutStatus').textContent='可在 Chrome 快捷键页面设置打开菜单的按键，建议 Alt+Shift+Y。';
+  }
+})();
 
 const bools={auto_bitcomet:'自动调用 BitComet',save_images:'自动保存图片',save_magnet:'保存磁力链接文本',skip_existing:'跳过完整的已有图片',open_after:'采集后打开目录'};
 for(const [key,label] of Object.entries(bools)) {

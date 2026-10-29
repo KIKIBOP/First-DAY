@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "网页影片一键采集助手",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "minimum_chrome_version": "105",
   "description": "从当前帖子保存预览原图与磁力链接，通过本地程序请求 BitComet。",
   "permissions": [
@@ -11,7 +11,10 @@
     "nativeMessaging",
     "declarativeNetRequestWithHostAccess"
   ],
-  "optional_host_permissions": ["https://*/*", "http://*/*"],
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -30,5 +33,13 @@
     "48": "icons/48.png",
     "128": "icons/128.png"
   },
-  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwXIOuIuyqNSctEpSI9eDRFLPDrLpN2R1mFy0Ag5xCpMpUPnlNNfPJRQjuNds5o/fXY0fw6L6mJhirlDLyLS1geUFFqxvrFHRRo+2aHB8n7cQClPf8iP9nAyC53v/o+KGFbsD3obmNBkEBk9Eu9xxIGHKqo5EElXEPiJUq2VRStI27ulJa7wmONSV89vimmLCnb31+/sfw+oU5T0xsAv571giaMch78GRvEn0jxW1ndP9FAhDdI6+mhs94dLbNjJQxZGl/IKwltczQxqt2m5AhnRwaOYNRcy8KIdMe36C3roD40xGa4iUoi/p4IYF57FcKrX1R4FDabwKQ3OLl/TLDQIDAQAB"
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwXIOuIuyqNSctEpSI9eDRFLPDrLpN2R1mFy0Ag5xCpMpUPnlNNfPJRQjuNds5o/fXY0fw6L6mJhirlDLyLS1geUFFqxvrFHRRo+2aHB8n7cQClPf8iP9nAyC53v/o+KGFbsD3obmNBkEBk9Eu9xxIGHKqo5EElXEPiJUq2VRStI27ulJa7wmONSV89vimmLCnb31+/sfw+oU5T0xsAv571giaMch78GRvEn0jxW1ndP9FAhDdI6+mhs94dLbNjJQxZGl/IKwltczQxqt2m5AhnRwaOYNRcy8KIdMe36C3roD40xGa4iUoi/p4IYF57FcKrX1R4FDabwKQ3OLl/TLDQIDAQAB",
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+Y",
+        "windows": "Alt+Shift+Y"
+      }
+    }
+  }
 }
