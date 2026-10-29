@@ -11,3 +11,7 @@ Bundled components:
 
 The distribution public key in extension\manifest.json fixes the unpacked Chrome extension ID.
 No private key or browser credentials are included.
+
+- Application public CA bundle: certifi 2026.10.19, Mozilla included CA set.
+  Reused from the supplied pip runtime; origin and SHA256: native-host/certs/provenance.json.
+  License: MPL-2.0, native-host/certs/CERTIFI-LICENSE.txt.

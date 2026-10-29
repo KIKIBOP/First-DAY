@@ -1,17 +1,19 @@
-# 网页影片一键采集助手 v0.1.2
+# 网页影片一键采集助手 v0.1.3
 
 Windows 11 辅助程序与 Chrome Manifest V3 扩展：从当前帖子提取标题、两张原图和磁力链接，保存图片，并按选项请求 BitComet。开发约定见 [AGENTS.md](AGENTS.md)。
 
-本版本以用户上传的 `MediaCollector-Portable-x64.7z` 为基础，保留运行目录中已放宽的预览图后缀规则，并同步到源码。扩展和本地协议版本统一为 `0.1.2`。
+本版本以用户上传的 `MediaCollector-Portable-x64.7z` 为基础，保留运行目录中已放宽的预览图后缀规则，并同步到源码。扩展和本地协议版本统一为 `0.1.3`。
 
 ## 修复内容
+
+- v0.1.3：补充明确加载的公共 CA 资源，增加证书链错误说明和本地信任库自检；不关闭证书及主机名校验。
 
 - 新建目录按清理后的帖子标题命名，不再追加 `[b78f945859]` 一类摘要。不同帖子真正重名时使用 `标题 (2)`、`标题 (3)`，不覆盖已有目录。
 - 原图优先通过 Chrome 当前网络和可用会话获取，再分块传给本地程序校验、保存，补上旧版 Python 直接下载不能使用浏览器会话及代理的路径。
 - 支持附件服务器返回通用二进制 MIME 或不返回 MIME；仍完整解码图片，拒绝 HTML、截断数据及明确冲突的图片 MIME。
 - 已有完整原图按记录和 SHA-256 跳过；只获取缺失或不匹配的图片。浏览器获取失败时记录原因，再尝试原有本地下载器。
 
-尚未收到用户设备上的具体错误文字，因此尚不能确认此次设备上的确切失败原因。实际测试范围及限制见 [docs/TEST_RESULTS.md](docs/TEST_RESULTS.md)。
+用户错误日志已确认两张原图均在 TLS 阶段因 `CERTIFICATE_VERIFY_FAILED: unable to get local issuer certificate` 失败。v0.1.3 将原包 pip 随附、经校验的 certifi 2026.10.19 公共 CA 列表作为独立应用资源，在系统默认信任库之外加载，保留证书链与主机名校验；自检显示信任库状态。无法仅凭日志判定是缺少根证书、服务器中间证书不全还是代理证书配置。若 Chrome 可正常查看，先使用浏览器取图；若两端都拒绝，需继续检查站点或网络证书配置。实际测试及限制见 [docs/TEST_RESULTS.md](docs/TEST_RESULTS.md)。
 
 ## 便携版使用与更新
 
@@ -74,7 +76,7 @@ npm test
 installer\build_exe.bat
 ```
 
-脚本使用 PyInstaller 生成 `dist\MediaCollectorHost.exe`，随后通过 `installer\install_host.bat` 注册。当前会话未执行 Windows EXE 编译或真机测试。
+脚本使用 PyInstaller 将 CA 数据目录一并打包，生成 `dist\MediaCollectorHost.exe`，随后通过 `installer\install_host.bat` 注册。当前会话未执行 Windows EXE 编译或真机测试。
 
 利用已有便携包重新生成完整便携 ZIP：
 

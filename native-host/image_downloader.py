@@ -3,6 +3,7 @@ import http.client, socket, ssl, ipaddress, io, warnings, time
 from urllib.parse import urlsplit, urljoin
 from PIL import Image
 from validation import web_url
+from tls_config import create_context, certificate_error
 MAX_BYTES=25*1024*1024
 Image.MAX_IMAGE_PIXELS=60_000_000
 FORMATS={'JPEG':('.jpg','image/jpeg'),'PNG':('.png','image/png'),'WEBP':('.webp','image/webp'),'GIF':('.gif','image/gif'),'BMP':('.bmp','image/bmp'),'AVIF':('.avif','image/avif')}
@@ -47,7 +48,9 @@ def fetch(url,referer,cancel=lambda:False):
         sock=socket.socket(family,socket.SOCK_STREAM); sock.settimeout(20)
         try:
             sock.connect(address)
-            if p.scheme=='https': sock=ssl.create_default_context().wrap_socket(sock,server_hostname=p.hostname)
+            if p.scheme=='https':
+                try: sock=create_context().wrap_socket(sock,server_hostname=p.hostname)
+                except ssl.SSLCertVerificationError as error: raise certificate_error(error) from error
             conn.sock=sock
             headers={'User-Agent':'ChromeMediaCollector/0.1','Accept':'image/*'}
             # Do not leak signed URLs/full post query to another origin.

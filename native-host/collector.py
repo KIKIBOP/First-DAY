@@ -8,6 +8,7 @@ from validation import magnet_keys
 from bitcomet import launch
 from task_manager import task_path
 from browser_images import read_image, cleanup as cleanup_images
+from tls_config import ImageCertificateError
 
 @contextmanager
 def lock(name, cancelled):
@@ -82,6 +83,8 @@ def run(task_id):
                             meta['images']=[r for r in meta['images'] if r.get('slot')!=i]+[dict(slot=i,url=image['url'],file=target.name,sha256=hashlib.sha256(payload).hexdigest())]
                             atomic_json(meta_path,meta); event(base+'保存成功'); break
                         except InterruptedError: raise
+                        except ImageCertificateError as e:
+                            errors.append(base+'失败：'+str(e)); event(errors[-1]); break
                         except Exception as e:
                             if attempt==cfg['retries']: errors.append(base+'失败：'+str(e)); event(errors[-1])
                             else:

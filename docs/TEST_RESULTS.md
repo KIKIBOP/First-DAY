@@ -1,10 +1,10 @@
-# v0.1.2 实际验证记录
+# v0.1.3 实际验证记录
 
 日期：2026-10-29（Asia/Shanghai）。环境：Linux，Python 3.12.14，本机 Chromium。
 
 ## 已执行
 
-- Python：`python3 -m unittest discover -s tests -p "test_*.py" -v`，**39 项通过，0 失败**。
+- Python：`python3 -m unittest discover -s tests -p "test_*.py" -v`，**48 项通过，0 失败**。
 - 浏览器：`npm test`，**53 项检查通过，0 失败**：DOM 24 项、Popup 模拟 Chrome API 8 项、原图传输/后台模拟 API 21 项。
 - Python 原始日志：`python-tests.txt`；浏览器原始日志：`browser-tests.txt`；机器可读明细：`test-results.json`。
 
@@ -20,7 +20,7 @@
 
 额外尝试在隔离 Linux Chromium 配置中加载真实扩展，平台返回：`Loading of unpacked extensions is disabled by the administrator.` 未修改管理员策略，也未把此项记为通过。
 
-未运行 Windows EXE、Windows 11 文件系统验证、真实 Chrome Native Messaging、真实网站图片请求或 BitComet 提交。未收到本次用户电脑上的错误文字，不能认定已复现其确切失败原因。浏览器会话及代理路径仍需在用户 Windows 环境确认。
+未运行 Windows EXE、Windows 11 文件系统验证、真实 Chrome Native Messaging、真实网站图片请求或 BitComet 提交。已收到用户错误日志，两张原图均因无法确认本地签发者证书而失败；尚不能确认是缺少公共根证书、服务器中间链不完整或代理证书配置。浏览器会话及代理路径仍需在用户 Windows 环境确认。
 
 便携交付复用用户原包内的 Windows 启动器、CPython 和 Pillow，不声称本次重新编译或真机运行了二进制。构建脚本独立校验输入运行文件 SHA-256、PE x64 和扩展 ID；导出后核对 ZIP、源码一致性及新校验清单。
 
@@ -34,3 +34,11 @@
 6. 最后测试 Chrome 与 BitComet 联动，手工确认任务保存位置。
 
 旧版测试和使用记录单独保留在 `LEGACY_TEST_RESULTS.md`、`legacy-test-results.json` 和 `LEGACY_README.md`。
+
+## 本次 TLS 回归（9 项，包含在 48 项内）
+
+通过 OpenSSL CLI 在临时目录生成测试 CA、服务器证书和临时私钥，采用 Python MemoryBIO 完成实际 TLS 握手，不连接外网。默认信任库拒绝未知测试 CA，并复现 verify_code=20 及 CERTIFICATE_VERIFY_FAILED；加载正确测试 CA 后握手成功；错误域名和过期证书仍被拒绝。临时私钥在测试后删除，不纳入源码或交付包。
+
+另检查公共 CA 的来源 SHA-256、资源缺失/无效时拒绝使用、证书与主机名验证保持开启、TLS 失败时关闭连接且不发送 HTTP 请求，以及证书失败不会重复进行无效下载尝试。
+
+公共 CA 资源来自原包中已校验的 certifi 2026.10.19，包含 120 个 CA；不改变 Windows 证书存储或浏览器安全设置。Windows 实际信任库、服务器证书链及用户网络代理仍需实测。

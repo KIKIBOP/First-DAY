@@ -24,6 +24,7 @@ def tracked_files():
     files=[ROOT/name for name in result.stdout.decode('utf-8').split('\0') if name]
     required={'AGENTS.md','README.md','.gitignore','.gitattributes','package.json','requirements.txt',
               'extension/manifest.json','native-host/main.py','native-host/browser_images.py',
+              'native-host/tls_config.py','native-host/certs/cacert.pem','native-host/certs/CERTIFI-LICENSE.txt','native-host/certs/provenance.json',
               'installer/build_exe.bat','tools/build_portable.py','register.ps1','extension-id.txt'}
     names={path.relative_to(ROOT).as_posix() for path in files}
     if required-names:
@@ -56,10 +57,14 @@ def verify_base(base):
     for name in ['MediaCollectorHost.exe','runtime/python.exe','runtime/python313.dll','runtime/Lib/site-packages/PIL/__init__.py']:
         if name not in expected: raise ValueError('原包运行文件缺失校验：'+name)
     pe64(base/'MediaCollectorHost.exe'); pe64(base/'runtime/python.exe')
-    key=json.loads((ROOT/'extension/manifest.json').read_text())['key']
+    key=json.loads((ROOT/'extension/manifest.json').read_text(encoding='utf-8-sig'))['key']
     identity=''.join(chr(ord('a')+int(ch,16)) for ch in hashlib.sha256(base64.b64decode(key,validate=True)).hexdigest()[:32])
-    if identity!=(ROOT/'extension-id.txt').read_text().strip():
+    if identity!=(ROOT/'extension-id.txt').read_text(encoding='utf-8-sig').strip():
         raise ValueError('扩展公钥与固定 ID 不一致')
+    certs=ROOT/'native-host/certs'
+    provenance=json.loads((certs/'provenance.json').read_text(encoding='utf-8-sig'))
+    if hashlib.sha256((certs/'cacert.pem').read_bytes()).hexdigest()!=provenance['sha256']:
+        raise ValueError('应用 CA 列表与来源记录不一致')
     return len(expected)
 
 
@@ -82,7 +87,7 @@ def main():
     args=parser.parse_args()
     checked=verify_base(args.base_package)
     files=tracked_files()
-    version=json.loads((ROOT/'extension/manifest.json').read_text())['version']
+    version=json.loads((ROOT/'extension/manifest.json').read_text(encoding='utf-8-sig'))['version']
     commit=subprocess.run(['git','rev-parse','HEAD'],cwd=ROOT,capture_output=True,text=True,check=True).stdout.strip()
     epoch=int(os.environ.get('SOURCE_DATE_EPOCH') or subprocess.run(['git','show','-s','--format=%ct','HEAD'],cwd=ROOT,capture_output=True,text=True,check=True).stdout.strip())
     stamp=tuple(datetime.fromtimestamp(max(epoch,315532800),timezone.utc).timetuple()[:6])
@@ -103,7 +108,7 @@ def main():
     (folder/'source-code.zip').write_bytes(source)
     source_path=out/f'MediaCollector-source-v{version}.zip'
     source_path.write_bytes(source)
-    info=json.loads((args.base_package/'build-info.json').read_text())
+    info=json.loads((args.base_package/'build-info.json').read_text(encoding='utf-8-sig'))
     info.update(version=version,built_on=datetime.fromtimestamp(epoch,timezone(timedelta(hours=8))).date().isoformat(),
                 windows_execution='NOT RUN: awaiting Windows 11 host',launcher_reused=True,source_commit=commit)
     (folder/'build-info.json').write_text(json.dumps(info,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')

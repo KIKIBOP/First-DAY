@@ -37,8 +37,17 @@ test_stale_task (test_native.NativeTests.test_stale_task) ... ok
 test_user_image_never_overwritten (test_native.NativeTests.test_user_image_never_overwritten) ... ok
 test_windows_names (test_native.NativeTests.test_windows_names) ... ok
 test_worker_survives_native_disconnect (test_native.NativeTests.test_worker_survives_native_disconnect) ... ok
+test_bundle_matches_recorded_provenance (test_tls.TLSConfigurationTests.test_bundle_matches_recorded_provenance) ... ok
+test_certificate_failure_is_not_retried_with_weaker_settings (test_tls.TLSConfigurationTests.test_certificate_failure_is_not_retried_with_weaker_settings) ... ok
+test_default_store_remains_verified_and_has_public_roots (test_tls.TLSConfigurationTests.test_default_store_remains_verified_and_has_public_roots) ... ok
+test_download_explains_certificate_failure_and_closes_socket (test_tls.TLSConfigurationTests.test_download_explains_certificate_failure_and_closes_socket) ... ok
+test_missing_or_invalid_bundle_fails_without_disabling_verification (test_tls.TLSConfigurationTests.test_missing_or_invalid_bundle_fails_without_disabling_verification) ... ok
+test_adding_the_correct_ca_completes_a_verified_handshake (test_tls.TLSHandshakeTests.test_adding_the_correct_ca_completes_a_verified_handshake) ... ok
+test_trusted_ca_does_not_allow_expired_certificate (test_tls.TLSHandshakeTests.test_trusted_ca_does_not_allow_expired_certificate) ... ok
+test_trusted_ca_does_not_allow_wrong_hostname (test_tls.TLSHandshakeTests.test_trusted_ca_does_not_allow_wrong_hostname) ... ok
+test_unknown_issuer_reproduces_reported_certificate_error (test_tls.TLSHandshakeTests.test_unknown_issuer_reproduces_reported_certificate_error) ... ok
 
 ----------------------------------------------------------------------
-Ran 39 tests in 0.550s
+Ran 48 tests in 0.866s
 
 OK

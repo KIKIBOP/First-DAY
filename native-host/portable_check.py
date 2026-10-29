@@ -8,6 +8,7 @@ def main():
     import ssl, ctypes, winreg, PIL
     from PIL import Image
     from protocol import read_message, write_message
+    from tls_config import trust_status
     assert ctypes.sizeof(ctypes.c_void_p)==8, '需要 Windows x64 运行环境'
     manifest=json.loads((root/'extension/manifest.json').read_text(encoding='utf-8'))
     key=base64.b64decode(manifest['key'],validate=True)
@@ -23,6 +24,9 @@ def main():
     assert status and status.get('ok') and settings and settings.get('ok'), 'Native 二进制协议自检失败'
     assert read_message(stream) is None,'Native stdout 出现额外数据'
     print(f'内置 Python {sys.version.split()[0]} / Pillow {PIL.__version__} / Windows x64')
+    trust=trust_status()
+    assert trust['certificate_verification'] and trust['hostname_verification']
+    print(f"HTTPS 信任库已加载 {trust['trusted_ca_count']} 个 CA，证书与主机名校验已开启（未连接图片站点）。")
     print('原图解码、本地启动器和 Native 二进制协议自检通过。')
     print('扩展 ID：'+extension_id)
     if not status['data']['bitcomet'].get('associated'):
