@@ -1,0 +1,39 @@
+# Local credentials and configuration; examples must contain placeholders only.
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Local scratch work and exported deliverables.
+/work/
+/output/
+
+# Build outputs, logs and temporary files.
+/build/
+/dist/
+*.log
+*.tmp
+*.temp
+*.bak
+*~
+
+# Python environments and caches (if Python is adopted).
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Windows development and operating-system metadata.
+.vs/
+*.suo
+*.user
+Thumbs.db
+Desktop.ini
+.DS_Store
